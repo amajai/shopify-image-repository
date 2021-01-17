@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>
+        {{current_user.username}}'s Profile
+    </h1>
+    <h5 class="mb-4">
+        Your Image Gallery
+    </h5>
+
+
+{% if images %}
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for image in images %}
+    <div class="col">
+      
+      <div class="card {% if image.permission=='private' %}border-danger {% else %} border-success {% endif %} h-100">
+       <a href="{{image.image_url}}"><img src="{{image.image_url}}" class="card-img-top" alt="{{image.image_name}}"></a>
+        
+        <div class="card-body">
+          <h5 class="card-title">{{image.image_name}}</h5>
+          {% if current_user.is_authenticated and current_user.id== image.owner_id%}
+          <a href="/delete/{{image.id}}">
+            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+          </a>
+          {% endif %}
+  
+        </div>
+        <div class="card-footer text-muted">
+            Permission: <span class="{% if image.permission=='private' %}text-danger {% else %} text-success{% endif %}">{{image.permission|upper}}</span> 
+          </div>
+      </div>
+  
+    </div>
+   {% endfor %}
+  </div>
+{% else %}
+    <p>You dont have images to display, why not start adding some!</p>
+{% endif %}
+</div>
+{% endblock %}
